@@ -1,0 +1,141 @@
+version: '3.0'
+
+services:
+
+  proxy:
+    restart: unless-stopped
+    image: nginx
+    ports:
+      - ${NGINX_PORT}:80
+    depends_on:
+      - auth
+      - user
+      - items
+      - cart
+      - order
+    build:
+       context: ./nginx
+    networks:
+      - node_network  
+
+  rabbitmq:
+    image: rabbitmq:3  
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    volumes:
+      - /var/lib/rabbitmq
+    networks:
+      - node_network      
+    env_file:
+      - .env
+
+  mongo:
+    image: docker.io/bitnami/mongodb:latest  
+    env_file:
+      - .env      
+    networks:
+      - node_network      
+    volumes:
+      - 'mongodb_master_data:/bitnami/mongodb'
+
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: ${NODE_ENV}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - node_network
+    command: npm run start:dev auth
+    env_file:
+      - .env
+
+  user:
+    build:
+      context: .
+      dockerfile: ./apps/user/Dockerfile
+      target: ${NODE_ENV}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - node_network
+    command: npm run start:dev user      
+    env_file:
+      - .env
+
+  items:
+    build:
+      context: .
+      dockerfile: ./apps/items/Dockerfile
+      target: ${NODE_ENV}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules    
+    networks:
+      - node_network
+    command: npm run start:dev items      
+    env_file:
+      - .env
+
+  cart:
+    build:
+      context: .
+      dockerfile: ./apps/cart/Dockerfile
+      target: ${NODE_ENV}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - node_network
+    command: npm run start:dev cart      
+    env_file:
+      - .env
+
+  order:
+    build:
+      context: .
+      dockerfile: ./apps/order/Dockerfile
+      target: ${NODE_ENV}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - node_network
+    command: npm run start:dev order      
+    env_file:
+      - .env
+
+volumes:
+  mongodb_master_data:
+    driver: local
+networks:
+  node_network:    
