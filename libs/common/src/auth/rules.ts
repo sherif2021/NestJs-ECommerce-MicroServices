@@ -5,5 +5,5 @@ export enum Rule {
     Manager = 'manager',
 }
 
-export const RULES_KEY = 'ruels';
-export const Rules = (...ruels: Rule[]) => SetMetadata(RULES_KEY, ruels);
+export const RULES_KEY = 'rules';
+export const Rules = (...rules: Rule[]) => SetMetadata(RULES_KEY, rules);

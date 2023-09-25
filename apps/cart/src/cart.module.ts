@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CustomJwtModule, RmqModule } from '@app/common';
 import * as Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Cart, CartSchema } from './entites/cart.entity';
+import { Cart, CartSchema } from './entities/cart.entity';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { Cart, CartSchema } from './entites/cart.entity';
       validationSchema: Joi.object({
         'RABBITMQ_DEFAULT_USER' : Joi.string().required(),
         'RABBITMQ_DEFAULT_PASS' : Joi.string().required(),
-        'JWT_SECTET_KEY': Joi.string().required(),
+        'JWT_SECRET_KEY': Joi.string().required(),
         'CART_MONGO_URI': Joi.string().required(),
         'RABBITMQ_CART_SERVICE_QUEUE': Joi.string().required(),
         'RABBITMQ_ITEMS_SERVICE_QUEUE': Joi.string().required(),

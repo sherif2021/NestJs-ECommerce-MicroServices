@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { RegisterDto } from '../dto/register.dto';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError, firstValueFrom, throwError } from 'rxjs';
-import { LoginDto } from '../dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,7 @@ export class AuthService {
       'create-user', registerDto,
     ).pipe(catchError(error => throwError(() => new RpcException(error.response)))));
 
-    return this.genrateJwtToken(result);
+    return this.generateJwtToken(result);
   }
 
   async login(loginDto: LoginDto) {
@@ -25,10 +25,10 @@ export class AuthService {
       'get-user-by-email-password', loginDto,
     ).pipe(catchError(error => throwError(() => new RpcException(error.response)))));
 
-    return this.genrateJwtToken(result);
+    return this.generateJwtToken(result);
   }
 
-  private async genrateJwtToken(user: any): Promise<Object> {
+  private async generateJwtToken(user: any): Promise<Object> {
     return {
       'accessToken': await this.jwtService.signAsync({
         id: user.id,

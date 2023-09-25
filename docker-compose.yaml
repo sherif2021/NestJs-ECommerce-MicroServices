@@ -4,7 +4,6 @@ services:
 
   proxy:
     restart: unless-stopped
-    image: nginx
     ports:
       - ${NGINX_PORT}:80
     depends_on:
@@ -33,13 +32,15 @@ services:
       - .env
 
   mongo:
-    image: docker.io/bitnami/mongodb:latest  
-    env_file:
-      - .env      
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password123 
     networks:
       - node_network      
     volumes:
-      - 'mongodb_master_data:/bitnami/mongodb'
+      - 'mongodb_master_data:/mongodb'
 
   auth:
     build:
@@ -87,6 +88,8 @@ services:
         condition: service_healthy
       mongo:
         condition: service_started
+    ports:
+      - 3000:3000
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules    

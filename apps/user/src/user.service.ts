@@ -1,17 +1,16 @@
 import { BadRequestException, NotFoundException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './entites/user.entity';
 import { Model } from 'mongoose';
 import { RpcException } from '@nestjs/microservices';
 import { Rule, decryptText, encryptText } from '@app/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { User, UserDocument } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
 
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>,
-    //  @Inject('CART_SERVICE') private cartClient: ClientProxy,
   ) { }
 
   async getUserById(id: string): Promise<User> {

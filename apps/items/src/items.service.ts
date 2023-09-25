@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Category } from './entites/category.entity';
+import { Category } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Prodcut } from './entites/product.entity';
+import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { FavoriteProduct } from './entites/favorite-product.entity';
+import { FavoriteProduct } from './entities/favorite-product.entity';
 import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class ItemsService {
 
   constructor(
     @InjectModel(Category.name) private categoryModel: Model<Category>,
-    @InjectModel(Prodcut.name) private productModel: Model<Prodcut>,
+    @InjectModel(Product.name) private productModel: Model<Product>,
     @InjectModel(FavoriteProduct.name) private favoriteProductModel: Model<FavoriteProduct>,
   ) { }
 
@@ -45,19 +45,19 @@ export class ItemsService {
     return category;
   }
 
-  async getHomeProducts(userId?: string): Promise<Prodcut[]> {
+  async getHomeProducts(userId?: string): Promise<Product[]> {
     const products = await this.productModel.find().limit(20).exec();
-    await this.getUserFavoriteProdcuts(products, userId);
+    await this.getUserFavoriteProducts(products, userId);
     return products;
   }
 
-  async getProductsByCategory(categoryId: string, userId?: string): Promise<Prodcut[]> {
+  async getProductsByCategory(categoryId: string, userId?: string): Promise<Product[]> {
     const products = await this.productModel.find({ categoryId }).limit(20).exec();
-    await this.getUserFavoriteProdcuts(products, userId);
+    await this.getUserFavoriteProducts(products, userId);
     return products;
   }
 
-  async createProduct(createProductDto: CreateProductDto): Promise<Prodcut> {
+  async createProduct(createProductDto: CreateProductDto): Promise<Product> {
 
     const category = await this.categoryModel.findById(createProductDto.categoryId).select('_id').exec();
 
@@ -66,7 +66,7 @@ export class ItemsService {
     return (new this.productModel(createProductDto)).save();
   }
 
-  async updateProdcut(id: string, updateProductDto: UpdateProductDto): Promise<Prodcut> {
+  async updateProduct(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
 
     if (updateProductDto.categoryId) {
       const category = await this.categoryModel.findById(updateProductDto.categoryId).select('_id').exec();
@@ -81,7 +81,7 @@ export class ItemsService {
     return product;
   }
 
-  async deleteProduct(id: string): Promise<Prodcut> {
+  async deleteProduct(id: string): Promise<Product> {
     const product = await this.productModel.findOneAndDelete({ _id: id }).exec();
 
     if (!product) throw new NotFoundException('this product is not found');
@@ -89,7 +89,7 @@ export class ItemsService {
     return product;
   }
 
-  async getFavoriteProducts(userId: string): Promise<Prodcut[]> {
+  async getFavoriteProducts(userId: string): Promise<Product[]> {
     const favorite = await this.favoriteProductModel.find({ userId }).limit(20).select('productId').exec();
 
     if (favorite.length == 0) return [];
@@ -103,7 +103,7 @@ export class ItemsService {
     return products;
   }
 
-  async createFavoriteProduct(userId: string, productId: string): Promise<Prodcut> {
+  async createFavoriteProduct(userId: string, productId: string): Promise<Product> {
     const product = await this.productModel.findById(productId).exec();
 
     if (!product) throw new NotFoundException('this product is not found');
@@ -113,7 +113,7 @@ export class ItemsService {
     return product;
   }
 
-  async deleteFavoriteProduct(userId: string, productId: string): Promise<Prodcut> {
+  async deleteFavoriteProduct(userId: string, productId: string): Promise<Product> {
     const product = await this.productModel.findById(productId).exec();
 
     if (!product) throw new NotFoundException('this product is not found');
@@ -123,7 +123,7 @@ export class ItemsService {
     return product;
   }
 
-  async getProductForMS(userId: string, productId: string, throwIfNotExist: boolean): Promise<Prodcut> {
+  async getProductForMS(userId: string, productId: string, throwIfNotExist: boolean): Promise<Product> {
     const product = await this.productModel.findById(productId).exec();
 
     if (!product) {
@@ -131,18 +131,18 @@ export class ItemsService {
       else return null;
     }
 
-    await this.getUserFavoriteProdcuts([product], userId);
+    await this.getUserFavoriteProducts([product], userId);
     return product;
   }
 
-  async getProductsForMS(userId: string, productsIds: string[]): Promise<Prodcut[]> {
+  async getProductsForMS(userId: string, productsIds: string[]): Promise<Product[]> {
     const products = await this.productModel.find({ _id: { $in: productsIds } }).exec();
 
-    await this.getUserFavoriteProdcuts(products, userId);
+    await this.getUserFavoriteProducts(products, userId);
     return products;
   }
 
-  private async getUserFavoriteProdcuts(products: Prodcut[], userId?: string) {
+  private async getUserFavoriteProducts(products: Product[], userId?: string) {
     if (products.length == 0) return;
 
     var result: string[] = [];

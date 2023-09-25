@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ApiHideProperty } from "@nestjs/swagger";
 import { Document } from "mongoose";
-import { OrderStatus } from "../common/order_status";
 
 @Schema({
     versionKey: false,
@@ -19,35 +19,29 @@ import { OrderStatus } from "../common/order_status";
         },
     },
 })
-export class Order extends Document {
+export class Product extends Document{
 
     @Prop({ required: true })
-    userId: string;
+    name: string;
 
     @Prop({ required: true })
-    total: number;
-
-    @Prop({ type: String, enum: OrderStatus, default: OrderStatus.watingForAdminAprroeved })
-    status: OrderStatus;
+    description: string;
 
     @Prop({ required: true })
-    products: Array<Object>;
+    price: number;
 
     @Prop({ required: true })
-    address: string;
+    categoryId : string;
 
     @Prop({ required: true })
-    phone: string;
+    coverPicture: string;
 
-    @Prop({ required: true })
-    deliveryDate: Date;
+    @Prop({ default: [] })
+    pictures: string[];
 
-    @Prop({ required: true })
-    deliveryTime: string;
-
-    @Prop({ default: '' })
-    notes: string;
+    @Prop()
+    @ApiHideProperty()
+    isFavorite: boolean;
 }
 
-export const OrderSchema = SchemaFactory.createForClass(Order);
-
+export const ProductSchema = SchemaFactory.createForClass(Product);

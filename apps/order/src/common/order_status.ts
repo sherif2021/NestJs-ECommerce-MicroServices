@@ -1,9 +1,9 @@
 export enum OrderStatus {
-    watingForAdminAprroeved = 'wating for admin aprroeved',
+    waitingForAdminApproved = 'waiting for admin approved',
     approved = 'approved',
     readyToShip = 'ready to ship',
     shipped = 'shipped',
     delivered = 'delivered',
-    rejctedFromClient = 'rejcted from client',
+    reactedFromClient = 'reacted from client',
     completed = 'completed',
 }

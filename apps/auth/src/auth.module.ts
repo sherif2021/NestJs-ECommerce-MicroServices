@@ -13,7 +13,7 @@ import { CustomJwtModule, RmqModule } from '@app/common';
       validationSchema: Joi.object({
         'RABBITMQ_DEFAULT_USER': Joi.string().required(),
         'RABBITMQ_DEFAULT_PASS': Joi.string().required(),
-        'JWT_SECTET_KEY': Joi.string().required(),
+        'JWT_SECRET_KEY': Joi.string().required(),
         'JWT_REFRESH_SECRET_KEY': Joi.string().required(),
         'JWT_DURATION': Joi.string().required(),
         'RABBITMQ_USER_SERVICE_QUEUE': Joi.string().required(),

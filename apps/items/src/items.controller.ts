@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Delete, Param, Patch, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Delete, Param, Patch } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { OptionalUserGuard, ParseObjectIdPipe, RmqService, Rule, Rules, RulesGuard, UserAuth, UserGuard, UserJwt } from '@app/common';
@@ -6,7 +6,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
-import { Prodcut } from './entites/product.entity';
+import { Product } from './entities/product.entity';
 
 @Controller()
 export class ItemsController {
@@ -57,7 +57,7 @@ export class ItemsController {
   @Rules(Rule.Admin)
   @UseGuards(UserGuard, RulesGuard)
   updateProduct(@Param('id', ParseObjectIdPipe) id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.itemsService.updateProdcut(id, updateProductDto);
+    return this.itemsService.updateProduct(id, updateProductDto);
   }
 
   @Delete('product/:id')
@@ -75,7 +75,7 @@ export class ItemsController {
 
   @Get('product/:id')
   @UseGuards(OptionalUserGuard)
-  getProdcutsByCategory(@Param('id', ParseObjectIdPipe) categoryId: string, @UserJwt() userAuth?: UserAuth) {
+  getProductsByCategory(@Param('id', ParseObjectIdPipe) categoryId: string, @UserJwt() userAuth?: UserAuth) {
     return this.itemsService.getProductsByCategory(categoryId, userAuth?.id);
   }
 
@@ -92,7 +92,7 @@ export class ItemsController {
   }
 
   @MessagePattern('get-product')
-  getProductForMS(@Ctx() context: RmqContext, @Payload() data: any): Promise<Prodcut> {
+  getProductForMS(@Ctx() context: RmqContext, @Payload() data: any): Promise<Product> {
     this.rmqService.ack(context);
 
     const { userId, productId, throwIfNotExist } = data;
@@ -101,7 +101,7 @@ export class ItemsController {
   }
 
   @MessagePattern('get-products')
-  getProductsForMS(@Ctx() context: RmqContext, @Payload() data: any): Promise<Prodcut[]> {
+  getProductsForMS(@Ctx() context: RmqContext, @Payload() data: any): Promise<Product[]> {
     this.rmqService.ack(context);
 
     const { userId, products, } = data;

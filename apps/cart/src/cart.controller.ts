@@ -3,7 +3,7 @@ import { CartService } from './cart.service';
 import { ParseObjectIdPipe, RmqService, UserAuth, UserGuard, UserJwt } from '@app/common';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
-import { Cart } from './entites/cart.entity';
+import { Cart } from './entities/cart.entity';
 
 @Controller()
 export class CartController {
@@ -38,7 +38,7 @@ export class CartController {
   @Post()
   @UseGuards(UserGuard)
   addProductToCart(@UserJwt() userAuth: UserAuth, @Body() addToCartDto: AddToCartDto) {
-    return this.cartService.addProdcutToCart(userAuth.id, addToCartDto);
+    return this.cartService.addProductToCart(userAuth.id, addToCartDto);
   }
 
   @Delete(':id')

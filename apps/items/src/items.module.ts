@@ -5,9 +5,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CustomJwtModule, RmqModule } from '@app/common';
 import * as Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Category, CategorySchema } from './entites/category.entity';
-import { Prodcut, ProdcutSchema } from './entites/product.entity';
-import { FavoriteProduct, FavoriteProductSchema } from './entites/favorite-product.entity';
+import { Category, CategorySchema } from './entities/category.entity';
+import { Product, ProductSchema } from './entities/product.entity';
+import { FavoriteProduct, FavoriteProductSchema } from './entities/favorite-product.entity';
 
 @Module({
   imports: [
@@ -40,8 +40,8 @@ import { FavoriteProduct, FavoriteProductSchema } from './entites/favorite-produ
         schema: CategorySchema,
       },
       {
-        name: Prodcut.name,
-        schema: ProdcutSchema,
+        name: Product.name,
+        schema: ProductSchema,
       },
       {
         name: FavoriteProduct.name,

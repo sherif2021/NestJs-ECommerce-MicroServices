@@ -2,7 +2,7 @@ import { Inject, Injectable, BadRequestException, NotFoundException } from '@nes
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Order } from './entites/order.entity';
+import { Order } from './entities/order.entity';
 import { Model } from 'mongoose';
 import { firstValueFrom, catchError, throwError } from 'rxjs';
 import { OrderStatus } from './common/order_status';

@@ -25,8 +25,8 @@ export class UserController {
 
   @Patch('update-password')
   @UseGuards(UserGuard)
-  updatePassword(@UserJwt() userAuth: UserAuth, @Body() updatePasswodDto: UpdatePasswordDto) {
-    return this.userService.updatePassword(userAuth.id, updatePasswodDto);
+  updatePassword(@UserJwt() userAuth: UserAuth, @Body() updatePasswordDto: UpdatePasswordDto) {
+    return this.userService.updatePassword(userAuth.id, updatePasswordDto);
   }
 
   @MessagePattern('create-user')
