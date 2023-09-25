@@ -88,8 +88,6 @@ services:
         condition: service_healthy
       mongo:
         condition: service_started
-    ports:
-      - 3000:3000
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules    
